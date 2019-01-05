@@ -47,7 +47,8 @@ export default {
       name: '',
       category: '',
       price: 0,
-      validationErrors: {}
+      validationErrors: {},
+      submittedOnce: false
     }
   },
   computed: {
@@ -55,7 +56,17 @@ export default {
       return Object.values(this.validationErrors).length > 0;
     }
   },
+  watch: {
+    name(value) { this.validateWatch(value, "name"); },
+    category(value) { this.validateWatch(value, "category"); },
+    price(value) { this.validateWatch(value, "price"); },
+  },
   methods: {
+    validateWatch(propertyName, value) {
+      if (this.submittedOnce) {
+        this.validate(propertyName, value);
+      }
+    },
     validate(propertyName, value) {
       let errors = [];
       Object(validator)[propertyName].forEach(v => {
@@ -76,6 +87,7 @@ export default {
       return this.hasErrors;
     },
     handleSubmit() {
+      this.submittedOnce = true;
       if (this.validateAll()) {
         console.log(`Form submitted: ${this.name} ${this.category} ${this.price}`);
       }
